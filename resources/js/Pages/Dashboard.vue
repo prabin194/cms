@@ -6,9 +6,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Input } from '@shadcn/ui/input'
 import { Sheet, SheetContent, SheetTrigger } from '@shadcn/ui/sheet'
 import { Bell, CircleUser, Home, LineChart, Menu, Package, Package2, Search, ShoppingCart, Users } from 'lucide-vue-next'
+import {Head} from "@inertiajs/vue3";
 </script>
 
 <template>
+    <Head title="Dashboard" />
+
     <div class="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
         <div class="hidden border-r bg-muted/40 md:block">
             <div class="flex h-full max-h-screen flex-col gap-2">
