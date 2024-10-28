@@ -6,13 +6,13 @@
   "tailwind": {
     "config": "tailwind.config.js",
     "css": "resources/css/app.css",
-    "baseColor": "slate",
+    "baseColor": "zinc",
     "cssVariables": true,
     "prefix": ""
   },
   "framework": "laravel",
   "aliases": {
-    "components": "@/components",
+    "components": "resources/js/shadcn",
     "utils": "@/lib/utils"
   }
 }
