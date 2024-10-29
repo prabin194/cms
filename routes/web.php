@@ -1,7 +1,13 @@
 <?php
 
+use App\Http\Controllers\AnalyticController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\MediaController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TagController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,8 +30,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    //Post
-    Route::get('/post', [PostController::class, 'index'])->name('post.index');
+    //CMS Routes
+    Route::resource('post', PostController::class);
+    Route::resource('category', CategoryController::class);
+    Route::resource('tag', TagController::class);
+    Route::resource('page', PageController::class);
+    Route::resource('media', MediaController::class);
+    Route::resource('contact', ContactController::class);
+    Route::resource('analytic', AnalyticController::class);
 });
 
 require __DIR__.'/auth.php';

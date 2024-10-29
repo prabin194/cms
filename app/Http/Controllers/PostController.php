@@ -26,6 +26,16 @@ class PostController extends Controller
     /**
      * Display the user's profile form.
      */
+    public function create(): Response
+    {
+        return Inertia::render('Post/Create', [
+            'status' => session('status'),
+        ]);
+    }
+
+    /**
+     * Display the user's profile form.
+     */
     public function edit(Request $request): Response
     {
         return Inertia::render('Profile/Edit', [
