@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uid')->unique()->nullable();
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->text('description')->nullable();
+            $table->string('parent_id')->nullable();
+            $table->uuid('user_id')->nullable();
+            $table->foreign('user_id')->references('uid')->on('users')->nullOnDelete();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

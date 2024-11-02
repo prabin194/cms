@@ -22,7 +22,7 @@ const form = useForm({
     remember: false,
 });
 
-const submit = () => {
+const onSubmit = () => {
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
     });
@@ -37,7 +37,7 @@ const submit = () => {
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
+        <form @submit.prevent="onSubmit">
             <div>
                 <InputLabel for="email" value="Email" />
 
