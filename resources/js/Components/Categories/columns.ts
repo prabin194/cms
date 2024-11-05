@@ -75,13 +75,14 @@ export const columns: ColumnDef<Category>[] = [
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
-            const category = row.original;
+            const item = row.original;
 
             return h(
                 "div",
                 { class: "relative" },
                 h(DropdownAction, {
-                    category,
+                    item,
+                    type: 'category',
                     onExpand: row.toggleExpanded,
                 })
             );

@@ -34,6 +34,7 @@ import {
 import { Button } from "@shadcn/ui/button";
 import { Badge } from "@shadcn/ui/badge";
 import { Link } from "@inertiajs/vue3";
+import { Toaster } from '@shadcn/ui/toast'
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -221,6 +222,7 @@ const showingNavigationDropdown = ref(false);
         </DropdownMenu>
       </header>
       <slot />
+      <Toaster />
     </div>
   </div>
 </template>

@@ -64,9 +64,12 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
+        $category = Category::where('uid', $id)->first();
+
         return Inertia::render('Category/Edit', [
+            'category' => $category,
             'status' => session('status'),
         ]);
     }
@@ -76,7 +79,15 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $category = Category::where('uid', $id)->first();
+
+        $category->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'parent_id' => $request->parent_id,
+        ]);
+
+        return redirect()->route('category.index')->with('success', 'Category updated successfully!');
     }
 
     /**
@@ -84,6 +95,12 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $category = Category::where('uid', $id)->first();
+
+        if ($category) {
+            $category->delete();
+        }
+
+        return redirect()->route('category.index')->with('success', 'Category deleted successfully!');
     }
 }

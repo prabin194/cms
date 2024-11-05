@@ -1,426 +1,149 @@
 <script setup lang="ts">
+import { ChevronLeft } from "lucide-vue-next";
+import { Head, useForm } from "@inertiajs/vue3";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Badge } from "@shadcn/ui/badge";
-
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@shadcn/ui/breadcrumb";
 import { Button } from "@shadcn/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@shadcn/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@shadcn/ui/dropdown-menu";
 import { Input } from "@shadcn/ui/input";
-import { Sheet, SheetContent, SheetTrigger } from "@shadcn/ui/sheet";
+import { Label } from "@shadcn/ui/label";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@shadcn/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@shadcn/ui/tabs";
-import {
-  Bell,
-  CircleUser,
-  File,
-  Home,
-  LineChart,
-  ListFilter,
-  Menu,
-  MoreHorizontal,
-  Package,
-  Package2,
-  PlusCircle,
-  Search,
-  ShoppingCart,
-  Users,
-} from "lucide-vue-next";
-import { Head } from "@inertiajs/vue3";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@shadcn/ui/select";
+import { Textarea } from "@shadcn/ui/textarea";
+import { ref } from "vue";
+import { useToast } from "@shadcn/ui/toast/use-toast";
+
+const props = defineProps({
+  category: {
+    type: Object,
+    required: true,
+  },
+});
+
+const { toast } = useToast();
+
+const formInput = ref(null);
+
+const form = useForm({
+  name: props.category.name,
+  description: props.category.description,
+  parent_id: props.category.parent_id,
+});
+
+const storeCategory = () => {
+  form.put(route("category.update", props.category.uid), {
+    preserveScroll: true,
+    onSuccess: () => {
+        form.reset();
+        toast({
+            title: "Success",
+            description: "Category updated successfully",
+            variant: "success",
+        });
+    },
+    onError: () => {
+      if (form.errors.name) {
+        form.reset("name", "description", "parent_id");
+        formInput.value.focus();
+      }
+    },
+  });
+};
 </script>
 
 <template>
-  <Head title="Category" />
+  <Head :title="`${props.category.name} Edit`" />
 
   <AuthenticatedLayout>
-    <Breadcrumb
-      class="hidden items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 md:flex"
+    <main
+      class="w-full flex-1 items-start gap-4 p-4 my-6 sm:px-6 sm:py-0 md:gap-12"
     >
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink as-child>
-            <a href="#">Dashboard</a>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbLink as-child>
-            <a href="#">Products</a>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>All Products</BreadcrumbPage>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
-    <main class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-      <Tabs default-value="all">
-        <div class="flex items-center">
-          <TabsList>
-            <TabsTrigger value="all"> All </TabsTrigger>
-            <TabsTrigger value="active"> Active </TabsTrigger>
-            <TabsTrigger value="draft"> Draft </TabsTrigger>
-            <TabsTrigger value="archived" class="hidden sm:flex">
-              Archived
-            </TabsTrigger>
-          </TabsList>
-          <div class="ml-auto flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger as-child>
-                <Button variant="outline" class="h-7 gap-1">
-                  <ListFilter class="h-3.5 w-3.5" />
-                  <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                    Filter
-                  </span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem checked> Active </DropdownMenuItem>
-                <DropdownMenuItem>Draft</DropdownMenuItem>
-                <DropdownMenuItem> Archived </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button variant="outline" class="h-7 gap-1">
-              <File class="h-3.5 w-3.5" />
-              <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Export
-              </span>
+      <div class="mx-auto grid flex-1 auto-rows-max gap-4">
+        <div class="flex items-center gap-4">
+          <Button variant="outline" size="icon" class="h-7 w-7">
+            <ChevronLeft class="h-4 w-4" />
+            <span class="sr-only">Back</span>
+          </Button>
+          <h1
+            class="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0"
+          >
+            Category
+          </h1>
+          <Badge variant="outline" class="ml-auto sm:ml-0"> Edit</Badge>
+          <div class="hidden items-center gap-2 md:ml-auto md:flex">
+            <Button variant="outline" as-child>
+              <a :href="route('category.index')"> Discard </a>
             </Button>
-            <Button class="h-7 gap-1" as-child>
-              <a :href="route('category.create')">
-                <PlusCircle class="h-3.5 w-3.5" />
-                <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Add Category
-                </span>
-              </a>
-            </Button>
+            <Button @click.prevent="storeCategory"> Save Category</Button>
           </div>
         </div>
-        <TabsContent value="all">
-          <Card>
-            <CardHeader>
-              <CardTitle>Products</CardTitle>
-              <CardDescription>
-                Manage your products and view their sales performance.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead class="hidden w-[100px] sm:table-cell">
-                      <span class="sr-only">img</span>
-                    </TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead class="hidden md:table-cell"> Price </TableHead>
-                    <TableHead class="hidden md:table-cell">
-                      Total Sales
-                    </TableHead>
-                    <TableHead class="hidden md:table-cell">
-                      Created at
-                    </TableHead>
-                    <TableHead>
-                      <span class="sr-only">Actions</span>
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell class="hidden sm:table-cell">
-                      <img
-                        alt="Product image"
-                        class="aspect-square rounded-md object-cover"
-                        height="64"
-                        src="/placeholder.svg"
-                        width="64"
-                      />
-                    </TableCell>
-                    <TableCell class="font-medium">
-                      Laser Lemonade Machine
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline"> Draft </Badge>
-                    </TableCell>
-                    <TableCell class="hidden md:table-cell">
-                      $499.99
-                    </TableCell>
-                    <TableCell class="hidden md:table-cell"> 25 </TableCell>
-                    <TableCell class="hidden md:table-cell">
-                      2023-07-12 10:42 AM
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger as-child>
-                          <Button
-                            aria-haspopup="true"
-                            size="icon"
-                            variant="ghost"
-                          >
-                            <MoreHorizontal class="h-4 w-4" />
-                            <span class="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell class="hidden sm:table-cell">
-                      <img
-                        alt="Product image"
-                        class="aspect-square rounded-md object-cover"
-                        height="64"
-                        src="/placeholder.svg"
-                        width="64"
-                      />
-                    </TableCell>
-                    <TableCell class="font-medium">
-                      Hypernova Headphones
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline"> Active </Badge>
-                    </TableCell>
-                    <TableCell class="hidden md:table-cell">
-                      $129.99
-                    </TableCell>
-                    <TableCell class="hidden md:table-cell"> 100 </TableCell>
-                    <TableCell class="hidden md:table-cell">
-                      2023-10-18 03:21 PM
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger as-child>
-                          <Button
-                            aria-haspopup="true"
-                            size="icon"
-                            variant="ghost"
-                          >
-                            <MoreHorizontal class="h-4 w-4" />
-                            <span class="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell class="hidden sm:table-cell">
-                      <img
-                        alt="Product image"
-                        class="aspect-square rounded-md object-cover"
-                        height="64"
-                        src="/placeholder.svg"
-                        width="64"
-                      />
-                    </TableCell>
-                    <TableCell class="font-medium">
-                      AeroGlow Desk Lamp
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline"> Active </Badge>
-                    </TableCell>
-                    <TableCell class="hidden md:table-cell"> $39.99 </TableCell>
-                    <TableCell class="hidden md:table-cell"> 50 </TableCell>
-                    <TableCell class="hidden md:table-cell">
-                      2023-11-29 08:15 AM
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger as-child>
-                          <Button
-                            aria-haspopup="true"
-                            size="icon"
-                            variant="ghost"
-                          >
-                            <MoreHorizontal class="h-4 w-4" />
-                            <span class="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell class="hidden sm:table-cell">
-                      <img
-                        alt="Product image"
-                        class="aspect-square rounded-md object-cover"
-                        height="64"
-                        src="/placeholder.svg"
-                        width="64"
-                      />
-                    </TableCell>
-                    <TableCell class="font-medium">
-                      TechTonic Energy Drink
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary"> Draft </Badge>
-                    </TableCell>
-                    <TableCell class="hidden md:table-cell"> $2.99 </TableCell>
-                    <TableCell class="hidden md:table-cell"> 0 </TableCell>
-                    <TableCell class="hidden md:table-cell">
-                      2023-12-25 11:59 PM
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger as-child>
-                          <Button
-                            aria-haspopup="true"
-                            size="icon"
-                            variant="ghost"
-                          >
-                            <MoreHorizontal class="h-4 w-4" />
-                            <span class="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell class="hidden sm:table-cell">
-                      <img
-                        alt="Product image"
-                        class="aspect-square rounded-md object-cover"
-                        height="64"
-                        src="/placeholder.svg"
-                        width="64"
-                      />
-                    </TableCell>
-                    <TableCell class="font-medium">
-                      Gamer Gear Pro Controller
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline"> Active </Badge>
-                    </TableCell>
-                    <TableCell class="hidden md:table-cell"> $59.99 </TableCell>
-                    <TableCell class="hidden md:table-cell"> 75 </TableCell>
-                    <TableCell class="hidden md:table-cell">
-                      2024-01-01 12:00 AM
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger as-child>
-                          <Button
-                            aria-haspopup="true"
-                            size="icon"
-                            variant="ghost"
-                          >
-                            <MoreHorizontal class="h-4 w-4" />
-                            <span class="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell class="hidden sm:table-cell">
-                      <img
-                        alt="Product image"
-                        class="aspect-square rounded-md object-cover"
-                        height="64"
-                        src="/placeholder.svg"
-                        width="64"
-                      />
-                    </TableCell>
-                    <TableCell class="font-medium">
-                      Luminous VR Headset
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline"> Active </Badge>
-                    </TableCell>
-                    <TableCell class="hidden md:table-cell">
-                      $199.99
-                    </TableCell>
-                    <TableCell class="hidden md:table-cell"> 30 </TableCell>
-                    <TableCell class="hidden md:table-cell">
-                      2024-02-14 02:14 PM
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger as-child>
-                          <Button
-                            aria-haspopup="true"
-                            size="icon"
-                            variant="ghost"
-                          >
-                            <MoreHorizontal class="h-4 w-4" />
-                            <span class="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </CardContent>
-            <CardFooter>
-              <div class="text-xs text-muted-foreground">
-                Showing <strong>1-10</strong> of <strong>32</strong>
-                products
-              </div>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-      </Tabs>
+        <div
+          class="w-full grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-12"
+        >
+          <div
+            class="w-full grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-12"
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle>Category Details</CardTitle>
+                <CardDescription>
+                  Edit Category Details for your blogs
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div class="grid gap-6">
+                  <div class="grid gap-3">
+                    <Label for="name">Name</Label>
+                    <Input
+                      id="name"
+                      ref="formInput"
+                      type="text"
+                      class="w-full"
+                      v-model="form.name"
+                    />
+                  </div>
+                  <div class="grid gap-3">
+                    <Label for="description">Description</Label>
+                    <Textarea
+                      id="description"
+                      v-model="form.description"
+                      class="min-h-32"
+                    />
+                  </div>
+                  <div class="grid gap-3">
+                    <Label for="status">Parent Category</Label>
+                    <Select>
+                      <SelectTrigger id="status" aria-label="Select status">
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="draft"> Draft</SelectItem>
+                        <SelectItem value="published"> Active</SelectItem>
+                        <SelectItem value="archived"> Archived</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+        <div class="flex items-center justify-center gap-2 md:hidden">
+          <Button variant="outline"> Discard</Button>
+          <Button @click.prevent="storeCategory"> Save Category</Button>
+        </div>
+      </div>
     </main>
   </AuthenticatedLayout>
 </template>

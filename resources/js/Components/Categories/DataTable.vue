@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@shadcn/ui/dropdown-menu";
 import { Input } from "@shadcn/ui/input";
-import { Button } from '@shadcn/ui/button';
+import { Button } from "@shadcn/ui/button";
 
 import {
   FlexRender,
