@@ -1,11 +1,11 @@
-import DropdownAction from "@/components/Categories/DataTableDropDown.vue";
+import DropdownAction from "@/components/Table/DataTableDropDown.vue";
 import { ColumnDef } from "@tanstack/vue-table";
 import { h, ref } from "vue";
 import { Button } from "@shadcn/ui/button";
 import { ArrowUpDown, ChevronDown } from "lucide-vue-next";
 import { Checkbox } from "@shadcn/ui/checkbox";
 
-export interface Category {
+export interface Tag {
     id: string;
     name: string;
     description?: string;
@@ -13,7 +13,7 @@ export interface Category {
     count: number;
 }
 
-export const columns: ColumnDef<Category>[] = [
+export const columns: ColumnDef<Tag>[] = [
     {
         id: "select",
         header: ({ table }) =>
@@ -82,7 +82,7 @@ export const columns: ColumnDef<Category>[] = [
                 { class: "relative" },
                 h(DropdownAction, {
                     item,
-                    type: 'category',
+                    type: 'tag',
                     onExpand: row.toggleExpanded,
                 })
             );

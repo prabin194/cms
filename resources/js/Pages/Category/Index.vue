@@ -2,9 +2,9 @@
 import { Head } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { shallowRef } from "vue";
-import type { Category } from "@/components/categories/columns";
-import { columns } from "@/components/categories/columns";
-import DataTable from "@/components/categories/DataTable.vue";
+import type { Category } from "@/components/columns/categories";
+import { columns } from "@/components/columns/categories";
+import DataTable from "@/components/table/DataTable.vue";
 import { Button } from "@shadcn/ui/button";
 
 const props = defineProps({
